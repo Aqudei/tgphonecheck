@@ -21,13 +21,16 @@ class PhoneNumber(models.Model):
 
 
 class Check(models.Model):
+
     RESULT_CHOICES = ((0, 'pending'), (1, 'has-tg'),
                       (2, 'no-username'), (3, 'error'))
     timestamp = models.DateTimeField(
         _("Timestamp"), auto_now=False, auto_now_add=True)
     phone_number = models.ForeignKey(PhoneNumber, verbose_name=_(
         "Phone Number"), on_delete=models.CASCADE)
-    result = models.IntegerField(_("Result"), choices=RESULT_CHOICES)
+    result = models.IntegerField(
+        _("Result"), choices=RESULT_CHOICES, default=0)
+    batch = models.CharField(_("Batch"), max_length=80, default='dummy-uuid')
 
     class Meta:
         verbose_name = _("check")

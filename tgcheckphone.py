@@ -1,8 +1,8 @@
-#!/usr/local/bin/python3
-from telethon import TelegramClient, errors, events, sync
+from telethon import TelegramClient, errors
 from telethon.tl.types import InputPhoneContact
 from telethon import functions, types
 from dotenv import load_dotenv
+
 import argparse
 import os
 from getpass import getpass

@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'phonenumber_field',
     'crispy_forms',
     'rest_framework',
-    'phonechecker.apps.PhonecheckerConfig'
+    'phonechecker.apps.PhonecheckerConfig',
+    'background_task'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

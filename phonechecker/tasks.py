@@ -139,10 +139,10 @@ def run_telethon(batch_uuid):
         if not check:
             continue
 
-        if r.startswith("ERROR"):
-            check.result = 3
-        elif r is None:
+        if r is None:
             check.result = 2
+        elif r.startswith('ERROR'):
+            check.result = 3
         else:
             check.result = 1
         check.timestamp = timezone.now()

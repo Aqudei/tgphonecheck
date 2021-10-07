@@ -6,11 +6,9 @@
     Telethon Login
 {% endblock heading %}
 
-
-
 {% block content %}
 
-<form action="tg" method="post">
+<form action="{% url 'tglogin' %}" method="post">
     {% csrf_token %}
     {{ form|crispy }}
     <input type="submit" value="Submit">

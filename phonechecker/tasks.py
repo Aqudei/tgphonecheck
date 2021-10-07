@@ -19,7 +19,6 @@ load_dotenv()
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 PHONE_NUMBER = os.getenv("PHONE_NUMBER")
-client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
 
 
 @background()
@@ -46,7 +45,7 @@ def process_upload(batch_id, filename):
             )
 
 
-def get_names(phone_number):
+def get_names(client, phone_number):
     try:
         contact = InputPhoneContact(
             client_id=0, phone=phone_number, first_name="", last_name="")
@@ -70,16 +69,16 @@ def get_names(phone_number):
         raise
 
 
-def lookup_numbers(batch_uuid):
+def lookup_numbers(client, batch_uuid):
     '''
     The function uses the get_api_response function to first check if the user exists and if it does, then it returns the first user name and the last user name.
     '''
     result = {}
     numbers = Check.objects.filter(batch=batch_uuid).values_list(
-        'phone_number__phone_number')
+        'phone_number__phone_number', flat=True)
     try:
         for phone in numbers:
-            api_res = get_names(phone)
+            api_res = get_names(client, phone)
             result[phone] = api_res
         return result
     except:
@@ -91,16 +90,29 @@ def run_telethon(batch_uuid):
     """
     docstring
     """
+    if os.path.isfile("{}.session".format(PHONE_NUMBER)):
+        os.remove("{}.session".format(PHONE_NUMBER))
+
+    client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
     WAIT_SECONDS = 120
     print("Connecting to Telegram")
     client.connect()
-    print("Sending Auth request using phone: {}".format(PHONE_NUMBER))
-    client.send_code_request(PHONE_NUMBER)
-    login = BotLogin.objects.filter(batch=batch_uuid).first()
-    loop_start = timezone.now()
-    while not login and (timezone.now()-loop_start).total_seconds() < WAIT_SECONDS:
+    is_user_authorized = client.is_user_authorized()
+    if not is_user_authorized:
+        print("User is not authorized. Initiating Login...")
+        print("Sending Auth request using phone: {}".format(PHONE_NUMBER))
+        client.send_code_request(PHONE_NUMBER)
         login = BotLogin.objects.filter(batch=batch_uuid).first()
-    if not login:
-        return
-    result = lookup_numbers(batch_uuid)
+        loop_start = timezone.now()
+        print("Waiting for code...")
+        while not login and (timezone.now()-loop_start).total_seconds() < WAIT_SECONDS:
+            login = BotLogin.objects.filter(batch=batch_uuid).first()
+        if not login:
+            print("No code received. Exiting..")
+            return
+
+        print("Code received! Processing nunbers..")
+        client.sign_in(PHONE_NUMBER, login.code)
+
+    result = lookup_numbers(client, batch_uuid)
     print(result)

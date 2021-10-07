@@ -6,6 +6,7 @@ class TelethonLoginForm(forms.Form):
 
     # TODO: Define form fields here
     code = forms.CharField()
+    batch_id = forms.CharField()
 
 
 class UploadForm(forms.Form):

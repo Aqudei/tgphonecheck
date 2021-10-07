@@ -25,26 +25,31 @@ def upload(request):
         if form.is_valid():
             # Process here
             file = form.cleaned_data['file']
-            with default_storage.open("tmp/numbers.csv", 'wb') as outfile:
+            filename = "{}.csv".format(uuid4())
+            with default_storage.open("tmp/{}".format(filename), 'wb') as outfile:
                 for chunk in file.chunks():
                     outfile.write(chunk)
-                tasks.process_upload(batch_id)
+                tasks.process_upload(batch_id, filename)
                 return redirect('/checker/tglogin/{}'.format(batch_id))
         else:
             return render(request, 'phonechecker/upload.html', {"form": form})
 
 
-def tglogin(request):
+def tglogin(request, batch_id=None):
     """
     docstring
     """
     if request.method == 'GET':
-        form = TelethonLoginForm()
+        tasks.run_telethon(batch_id)
+        form = TelethonLoginForm(initial={"batch_id": batch_id})
         return render(request, 'phonechecker/tglogin.html', {"form": form})
     else:
         form = TelethonLoginForm(data=request.POST)
         if form.is_valid():
-            # porcess here
-            return redirect("")
+            BotLogin.objects.create(
+                batch=form.cleaned_data['batch_id'],
+                code=form.cleaned_data['code']
+            )
+            return redirect('/admin/phonechecker/check')
         else:
             return render(request, 'phonechecker/tglogin.html', {"form": form})

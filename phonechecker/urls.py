@@ -18,5 +18,5 @@ from django.urls import path
 from phonechecker.views import *
 urlpatterns = [
     path('upload', upload, name='upload'),
-    path('tglogin', tglogin, name='tglogin')
+    path('tglogin/<str:batch_id>', tglogin, name='tglogin')
 ]

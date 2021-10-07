@@ -3,11 +3,19 @@ from django.views import generic
 from phonechecker.forms import TelethonLoginForm
 from phonechecker.models import *
 from phonechecker.serializers import *
-from rest_framework import views, generics, response
+from rest_framework import views, generics, response, decorators
 from django.utils import timesince, timezone
 from uuid import uuid4
 
 # Create your views here.
+
+
+@decorators.api_view()
+def botlogin(request):
+    """
+    docstring
+    """
+    pass
 
 
 def tglogin(request):

@@ -41,3 +41,22 @@ class Check(models.Model):
 
     def get_absolute_url(self):
         return reverse("check_detail", kwargs={"pk": self.pk})
+
+
+class BotLogin(models.Model):
+
+    done = models.BooleanField(_("Done"), default=False)
+    phone_number = models.PhoneNumberField(_("Phone Number"))
+    code = models.CharField(_("Code"), max_length=50, null=True, blank=True)
+    timestamp = models.DateTimeField(
+        _("Timestamp"), auto_now=False, auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("botlogin")
+        verbose_name_plural = _("botlogins")
+
+    def __str__(self):
+        return "{}".format(self.phone_number)
+
+    def get_absolute_url(self):
+        return reverse("botlogin_detail", kwargs={"pk": self.pk})

@@ -126,3 +126,21 @@ def run_telethon(batch_uuid):
     print("Looking up numbers...")
     result = lookup_numbers(client, batch_uuid)
     print(result)
+
+    for phone in result:
+        r = result[phone]
+        phone_number = PhoneNumber.objects.filter(phone_number=phone).first()
+        if not phone_number:
+            continue
+
+        check = Check.objects.filter(
+            batch=batch_uuid, phone_number=phone_number).first()
+        if not check:
+            continue
+
+        if r.startswith("ERROR"):
+            check.result = 3
+        else:
+            check.result = 1
+        check.timestamp = timezone.now()
+        check.save()

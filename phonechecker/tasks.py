@@ -50,12 +50,13 @@ def get_names(client, phone_number):
         contact = InputPhoneContact(
             client_id=0, phone=phone_number, first_name="", last_name="")
         contacts = client(functions.contacts.ImportContactsRequest([contact]))
-        username = contacts.to_dict()['users'][0]['username']
+        user = contacts.to_dict()['users'][0]
+        username = user['username']
         if not username:
             print(
                 "*"*5 + f' Response detected, but no user name returned by the API for the number: {phone_number} ' + "*"*5)
             del_usr = client(
-                functions.contacts.DeleteContactsRequest(id=[username]))
+                functions.contacts.DeleteContactsRequest(id=[user['id']]))
             return
         else:
             del_usr = client(
@@ -140,6 +141,8 @@ def run_telethon(batch_uuid):
 
         if r.startswith("ERROR"):
             check.result = 3
+        elif r is None:
+            check.result = 2
         else:
             check.result = 1
         check.timestamp = timezone.now()

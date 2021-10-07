@@ -92,7 +92,9 @@ def run_telethon(batch_uuid):
     docstring
     """
     WAIT_SECONDS = 120
+    print("Connecting to Telegram")
     client.connect()
+    print("Sending Auth request using phone: {}".format(PHONE_NUMBER))
     client.send_code_request(PHONE_NUMBER)
     login = BotLogin.objects.filter(batch=batch_uuid).first()
     loop_start = timezone.now()
@@ -100,4 +102,5 @@ def run_telethon(batch_uuid):
         login = BotLogin.objects.filter(batch=batch_uuid).first()
     if not login:
         return
-    lookup_numbers(batch_uuid)
+    result = lookup_numbers(batch_uuid)
+    print(result)

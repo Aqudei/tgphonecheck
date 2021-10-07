@@ -21,6 +21,7 @@ def upload(request):
 
     if request.method == 'POST':
         batch_id = str(uuid4())
+        request.session['batch_id'] = batch_id
         form = UploadForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             # Process here
@@ -30,15 +31,19 @@ def upload(request):
                 for chunk in file.chunks():
                     outfile.write(chunk)
                 tasks.process_upload(batch_id, filename)
-                return redirect('/checker/tglogin/{}'.format(batch_id))
+                return redirect('tglogin')
         else:
             return render(request, 'phonechecker/upload.html', {"form": form})
 
 
-def tglogin(request, batch_id=None):
+def tglogin(request):
     """
     docstring
     """
+    batch_id = request.session.get('batch_id')
+    if not batch_id:
+        return redirect('upload')
+        
     if request.method == 'GET':
         tasks.run_telethon(batch_id)
         form = TelethonLoginForm(initial={"batch_id": batch_id})

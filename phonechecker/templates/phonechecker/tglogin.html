@@ -1,9 +1,16 @@
 {% extends 'phonechecker/base.html' %}
 {% load crispy_forms_tags %}
 
+
+{% block heading %}
+    Telethon Login
+{% endblock heading %}
+
+
+
 {% block content %}
 
-<form action="." method="post">
+<form action="tg" method="post">
     {% csrf_token %}
     {{ form|crispy }}
     <input type="submit" value="Submit">

@@ -11,3 +11,8 @@ class CheckAdmin(admin.ModelAdmin):
 @admin.register(PhoneNumber)
 class PhoneNumberAdmin(admin.ModelAdmin):
     list_display = ('phone_number',)
+
+
+@admin.register(BotLogin)
+class BotLoginAdmin(admin.ModelAdmin):
+    list_display = ('batch', 'done', 'phone_number', 'code', 'two_factor')

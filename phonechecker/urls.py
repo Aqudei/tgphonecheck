@@ -17,5 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from phonechecker.views import *
 urlpatterns = [
-    path('upload', upload, name='upload')
+    path('upload', upload, name='upload'),
+    path('tglogin', tglogin, name='tglogin')
 ]

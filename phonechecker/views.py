@@ -8,6 +8,7 @@ from django.utils import timesince, timezone
 from uuid import uuid4
 from phonechecker import tasks
 import os
+from django.core.files.storage import default_storage
 
 
 def upload(request):
@@ -16,13 +17,21 @@ def upload(request):
     """
     if request.method == 'GET':
         form = UploadForm()
-        return render(request, 'phonechecker/upload.htm', {"form": form})
+        return render(request, 'phonechecker/upload.html', {"form": form})
 
     if request.method == 'POST':
+        batch_id = str(uuid4())
         form = UploadForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             # Process here
-            return redirect("")
+            file = form.cleaned_data['file']
+            with default_storage.open("tmp/numbers.csv", 'wb') as outfile:
+                for chunk in file.chunks():
+                    outfile.write(chunk)
+                tasks.process_upload(batch_id)
+                return redirect('/checker/tglogin/{}'.format(batch_id))
+        else:
+            return render(request, 'phonechecker/upload.html', {"form": form})
 
 
 def tglogin(request):

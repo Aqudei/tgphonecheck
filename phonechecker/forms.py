@@ -6,3 +6,10 @@ class TelethonLoginForm(forms.Form):
 
     # TODO: Define form fields here
     code = forms.CharField()
+
+
+class UploadForm(forms.Form):
+    """
+    docstring
+    """
+    file = forms.FileField()

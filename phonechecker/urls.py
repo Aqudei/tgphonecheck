@@ -17,5 +17,5 @@ from django.contrib import admin
 from django.urls import path
 from phonechecker.views import *
 urlpatterns = [
-    path('checks', CheckView.as_view())
+    path('upload', upload, name='upload')
 ]

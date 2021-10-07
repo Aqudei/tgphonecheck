@@ -1,4 +1,4 @@
-from time import timezone
+from time import sleep, timezone
 from background_task import background
 from django.db.models.fields import CharField
 from telethon.sync import TelegramClient
@@ -85,7 +85,7 @@ def lookup_numbers(client, batch_uuid):
         raise
 
 
-@background(schedule=5)
+@background(schedule=3)
 def run_telethon(batch_uuid):
     """
     docstring
@@ -94,9 +94,18 @@ def run_telethon(batch_uuid):
         os.remove("{}.session".format(PHONE_NUMBER))
 
     client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
+    # print("Deleting session file...")
+    # tg_session_file = "{}.session".format(PHONE_NUMBER)
+    # if os.path.isfile(tg_session_file):
+    #     try:
+    #         os.remove(tg_session_file)
+    #     except:
+    #         print("Unable to delete Telethon session...")
+
     WAIT_SECONDS = 120
     print("Connecting to Telegram")
     client.connect()
+
     is_user_authorized = client.is_user_authorized()
     if not is_user_authorized:
         print("User is not authorized. Initiating Login...")
@@ -111,8 +120,9 @@ def run_telethon(batch_uuid):
             print("No code received. Exiting..")
             return
 
-        print("Code received! Processing nunbers..")
+        print("Code received!")
         client.sign_in(PHONE_NUMBER, login.code)
 
+    print("Looking up numbers...")
     result = lookup_numbers(client, batch_uuid)
     print(result)

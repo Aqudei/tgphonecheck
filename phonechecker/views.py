@@ -24,4 +24,18 @@ def upload(request):
             # Process here
             return redirect("")
 
-# Create your views here.
+
+def tglogin(request):
+    """
+    docstring
+    """
+    if request.method == 'GET':
+        form = TelethonLoginForm()
+        return render(request, 'phonechecker/tglogin.html', {"form": form})
+    else:
+        form = TelethonLoginForm(data=request.POST)
+        if form.is_valid():
+            # porcess here
+            return redirect("")
+        else:
+            return render(request, 'phonechecker/tglogin.html', {"form": form})

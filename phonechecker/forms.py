@@ -4,12 +4,18 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
 
-class TelethonLoginForm(forms.Form):
+class TelethonLoginForm(forms.ModelForm):
     """TelethonLoginForm definition."""
 
-    # TODO: Define form fields here
-    code = forms.CharField()
-    batch_id = forms.CharField()
+    def __init__(self, *args, **kwargs):
+        super(TelethonLoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(
+            Submit('submit', 'Submit', css_class='btn-primary'))
+
+    class Meta:
+        exclude = ('done', 'two_factor', 'timestamp')
+        model = BotLogin
 
 
 class UploadForm(forms.ModelForm):
@@ -28,7 +34,8 @@ class UploadForm(forms.ModelForm):
             ),
         )
 
-        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+        self.helper.add_input(
+            Submit('submit', 'Submit', css_class='btn-primary'))
 
     class Meta:
         """

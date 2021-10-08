@@ -3,15 +3,14 @@
 
 
 {% block heading %}
-    Telethon Login
+Telethon Login
 {% endblock heading %}
 
 {% block content %}
 
 <form action="{% url 'tglogin' %}" method="post">
     {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" value="Submit">
+    {% crispy form %}
 </form>
-    
+
 {% endblock content %}

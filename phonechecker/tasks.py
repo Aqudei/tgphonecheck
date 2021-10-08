@@ -89,18 +89,25 @@ def run_telethon(batch_uuid):
     """
     docstring
     """
-
-    client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
-
     WAIT_SECONDS = 120
+
+    loop_start = timezone.now()
+    login = BotLogin.objects.filter(batch=batch_uuid).first()
+    while not login and (timezone.now()-loop_start).total_seconds() < WAIT_SECONDS:
+        login = BotLogin.objects.filter(batch=batch_uuid).first()
+    if not login:
+        return
+
+    client = TelegramClient(login.phone_number, API_ID, API_HASH)
+
     print("Connecting to Telegram")
     client.connect()
 
     is_user_authorized = client.is_user_authorized()
     if not is_user_authorized:
         print("User is not authorized. Initiating Login...")
-        print("Sending Auth request using phone: {}".format(PHONE_NUMBER))
-        client.send_code_request(PHONE_NUMBER)
+        print("Sending Auth request using phone: {}".format(login.phone_number))
+        client.send_code_request(login.phone_number)
         login = BotLogin.objects.filter(batch=batch_uuid).first()
         loop_start = timezone.now()
         print("Waiting for code...")

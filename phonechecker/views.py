@@ -46,15 +46,15 @@ def tglogin(request):
 
     if request.method == 'GET':
         tasks.run_telethon(batch_id)
-        form = TelethonLoginForm(initial={"batch_id": batch_id})
+        form = TelethonLoginForm(initial={"batch": batch_id})
         return render(request, 'phonechecker/tglogin.html', {"form": form})
     else:
-        form = TelethonLoginForm(data=request.POST)
+        form = TelethonLoginForm(request.POST)
         if form.is_valid():
-            BotLogin.objects.create(
-                batch=form.cleaned_data['batch_id'],
-                code=form.cleaned_data['code']
-            )
-            return redirect('/admin/phonechecker/check')
+            obj = form.save()
+            if not obj.code or obj.code == '':
+                return render(request, 'phonechecker/tglogin.html', {"form": form})
+            else:
+                return redirect('/admin/phonechecker/check')
         else:
             return render(request, 'phonechecker/tglogin.html', {"form": form})

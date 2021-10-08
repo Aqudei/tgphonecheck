@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 class PhoneNumber(models.Model):
 
-    phone_number = CharField(_("Phone Number"),max_length=100)
+    phone_number = CharField(_("Phone Number"), max_length=100)
 
     class Meta:
         verbose_name = _("phonenumber")
@@ -47,7 +47,8 @@ class Check(models.Model):
 class Upload(models.Model):
 
     file = models.FileField(_("Upload"), upload_to=None, max_length=100)
-    phone_column = models.CharField(_("Column Name"), max_length=200)
+    phone_column = models.CharField(
+        _("Column Name"), max_length=200, default='PhoneNumbers')
     batch_id = models.CharField(
         _("Batch Id"), max_length=100, null=True, blank=True, default='')
     remarks = models.TextField(_("Remarks"), null=True, blank=True, default='')
@@ -66,7 +67,7 @@ class Upload(models.Model):
 class BotLogin(models.Model):
     batch = models.CharField(_("Batch"), max_length=100)
     done = models.BooleanField(_("Done"), default=False)
-    phone_number = CharField(_("Phone Number"),max_length=100)
+    phone_number = CharField(_("Phone Number"), max_length=100)
     code = models.CharField(_("Code"), max_length=50,
                             default='', null=True, blank=True)
     two_factor = models.CharField(

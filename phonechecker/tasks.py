@@ -30,8 +30,7 @@ def process_upload(batch_id):
     if not upload:
         return
 
-    df = pd.read_csv(os.path.join(
-        settings.MEDIA_ROOT, 'tmp', upload.file.path), dtype='str')
+    df = pd.read_csv(upload.file.path, dtype='str')
 
     for phone_number in df[upload.phone_column]:
         # if not item.startswith("+"):

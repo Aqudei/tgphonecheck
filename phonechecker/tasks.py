@@ -111,9 +111,10 @@ def run_telethon(batch_uuid):
         login = BotLogin.objects.filter(batch=batch_uuid).first()
         loop_start = timezone.now()
         print("Waiting for code...")
-        while not login and (timezone.now()-loop_start).total_seconds() < WAIT_SECONDS:
+        while (login.code == '' or login.code is None) and (timezone.now()-loop_start).total_seconds() < WAIT_SECONDS:
             login = BotLogin.objects.filter(batch=batch_uuid).first()
-        if not login:
+
+        if login.code == '' or login.code is None:
             print("No code received. Exiting..")
             return
 

@@ -10,7 +10,11 @@ Telethon Login
 
 <form action="{% url 'tglogin' %}" method="post">
     {% csrf_token %}
-    {% crispy form %}
+    {% crispy form1 %}
 </form>
 
+<form action="{% url 'tglogin' %}" method="post">
+    {% csrf_token %}
+    {% crispy form2 %}
+</form>
 {% endblock content %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import generic
-from phonechecker.forms import TelethonLoginForm, UploadForm
+from phonechecker.forms import LoginCodeForm, LoginPhoneNumberForm, UploadForm
 from phonechecker.models import *
 from phonechecker.serializers import *
 from rest_framework import views, generics, response, decorators
@@ -30,6 +30,7 @@ def upload(request):
             obj.batch_id = batch_id
             obj.save()
             tasks.process_upload(batch_id)
+            tasks.run_telethon(batch_id)
             return redirect('tglogin')
         else:
             print(form.errors)
@@ -45,16 +46,25 @@ def tglogin(request):
         return redirect('upload')
 
     if request.method == 'GET':
-        tasks.run_telethon(batch_id)
-        form = TelethonLoginForm(initial={"batch": batch_id})
-        return render(request, 'phonechecker/tglogin.html', {"form": form})
+        form1 = LoginPhoneNumberForm()
+        form2 = LoginCodeForm()
+        return render(request, 'phonechecker/tglogin.html', {"form1": form1, "form2": form2})
     else:
-        form = TelethonLoginForm(request.POST)
-        if form.is_valid():
-            obj = form.save()
-            if not obj.code or obj.code == '':
-                return render(request, 'phonechecker/tglogin.html', {"form": form})
-            else:
-                return redirect('/admin/phonechecker/check')
+        form1 = LoginPhoneNumberForm(request.POST)
+        form2 = LoginCodeForm(request.POST)
+        if 'submit-phone' in request.POST:
+            print("Phone number submitted")
+            if form1.is_valid():
+                obj, created = BotLogin.objects.update_or_create(batch=batch_id, defaults={
+                    "phone_number": form1.cleaned_data['phone_number']
+                })
         else:
-            return render(request, 'phonechecker/tglogin.html', {"form": form})
+            print("Code submitted")
+            if form2.is_valid():
+                obj, created = BotLogin.objects.update_or_create(batch=batch_id, defaults={
+                    "code": form2.cleaned_data['code']
+                })
+
+        if created:
+            return render(request, 'phonechecker/tglogin.html', {"form1": form1, "form2": form2})
+        return redirect('/admin/phonechecker/check/')

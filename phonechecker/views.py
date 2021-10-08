@@ -4,12 +4,11 @@ from phonechecker.forms import TelethonLoginForm, UploadForm
 from phonechecker.models import *
 from phonechecker.serializers import *
 from rest_framework import views, generics, response, decorators
+from django.core.files.storage import default_storage
 from django.utils import timesince, timezone
 from uuid import uuid4
 from phonechecker import tasks
 import os
-from django.core.files.storage import default_storage
-
 
 def upload(request):
     """

@@ -9,6 +9,7 @@ django-crispy-forms==1.13.0
 django-phonenumber-field==5.2.0
 djangorestframework==3.12.4
 et-xmlfile==1.1.0
+gunicorn==20.1.0
 idna==3.2
 numpy==1.21.2
 openpyxl==3.0.9

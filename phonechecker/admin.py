@@ -20,4 +20,4 @@ class BotLoginAdmin(admin.ModelAdmin):
 
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
-    list_display = ('phone_column', 'file', 'remarks')
+    list_display = ('phone_column', 'file', 'remarks', 'batch_id')

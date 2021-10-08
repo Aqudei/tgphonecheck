@@ -9,7 +9,7 @@ import csv
 import phonenumbers
 import pandas as pd
 from django.utils import timesince, timezone
-from phonechecker.models import BotLogin, Check, PhoneNumber
+from phonechecker.models import BotLogin, Check, PhoneNumber, Upload
 from telethon import TelegramClient, errors, events
 from telethon.tl.types import InputPhoneContact
 from telethon import functions, types
@@ -22,14 +22,18 @@ PHONE_NUMBER = os.getenv("PHONE_NUMBER")
 
 
 @background()
-def process_upload(batch_id, filename):
+def process_upload(batch_id):
     """
     docstring
     """
-    df = pd.read_csv(os.path.join(
-        settings.MEDIA_ROOT, 'tmp', filename), dtype='str')
+    upload = Upload.objects.filter(batch_id=batch_id).first()
+    if not upload:
+        return
 
-    for item in df['PhoneNumbers']:
+    df = pd.read_csv(os.path.join(
+        settings.MEDIA_ROOT, 'tmp', upload.file.path), dtype='str')
+
+    for item in df[upload.phone_column]:
         # if not item.startswith("+"):
         #     item = "+{}".format(item)
         print("Parsing Number: {}".format(item))

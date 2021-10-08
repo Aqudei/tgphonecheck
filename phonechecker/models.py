@@ -48,7 +48,9 @@ class Check(models.Model):
 class Upload(models.Model):
 
     file = models.FileField(_("Upload"), upload_to=None, max_length=100)
-    phone_column = models.IntegerField(_("Phone Column"), default=-1)
+    phone_column = models.CharField(_("Column Name"), max_length=200)
+    batch_id = models.CharField(
+        _("Batch Id"), max_length=100, null=True, blank=True, default='')
     remarks = models.TextField(_("Remarks"), null=True, blank=True, default='')
 
     class Meta:

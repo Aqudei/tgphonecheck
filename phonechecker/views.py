@@ -10,6 +10,7 @@ from uuid import uuid4
 from phonechecker import tasks
 import os
 
+
 def upload(request):
     """
     docstring
@@ -21,17 +22,17 @@ def upload(request):
     if request.method == 'POST':
         batch_id = str(uuid4())
         request.session['batch_id'] = batch_id
-        form = UploadForm(data=request.POST, files=request.FILES)
+        form = UploadForm(request.POST, initial={
+                          "batch_id": batch_id}, files=request.FILES)
         if form.is_valid():
             # Process here
-            file = form.cleaned_data['file']
-            filename = "{}.csv".format(uuid4())
-            with default_storage.open("tmp/{}".format(filename), 'wb') as outfile:
-                for chunk in file.chunks():
-                    outfile.write(chunk)
-                tasks.process_upload(batch_id, filename)
-                return redirect('tglogin')
+            obj = form.save(commit=False)
+            obj.batch_id = batch_id
+            obj.save()
+            tasks.process_upload(batch_id)
+            return redirect('tglogin')
         else:
+            print(form.errors)
             return render(request, 'phonechecker/upload.html', {"form": form})
 
 
@@ -42,7 +43,7 @@ def tglogin(request):
     batch_id = request.session.get('batch_id')
     if not batch_id:
         return redirect('upload')
-        
+
     if request.method == 'GET':
         tasks.run_telethon(batch_id)
         form = TelethonLoginForm(initial={"batch_id": batch_id})

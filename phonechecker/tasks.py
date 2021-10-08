@@ -26,7 +26,7 @@ def process_upload(batch_id, filename):
     """
     docstring
     """
-    df = pd.read_excel(os.path.join(
+    df = pd.read_csv(os.path.join(
         settings.MEDIA_ROOT, 'tmp', filename), dtype='str')
     # df['PhoneNumbers'] = df['PhoneNumbers'].astype('str')
     for item in df['PhoneNumbers']:

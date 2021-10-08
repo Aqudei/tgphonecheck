@@ -33,20 +33,15 @@ def process_upload(batch_id):
     df = pd.read_csv(os.path.join(
         settings.MEDIA_ROOT, 'tmp', upload.file.path), dtype='str')
 
-    for item in df[upload.phone_column]:
+    for phone_number in df[upload.phone_column]:
         # if not item.startswith("+"):
         #     item = "+{}".format(item)
-        print("Parsing Number: {}".format(item))
-        parsed = phonenumbers.parse(item)
-        if phonenumbers.is_valid_number(parsed):
-            formatted = phonenumbers.format_number(
-                parsed, phonenumbers.PhoneNumberFormat.E164)
-            obj, created = PhoneNumber.objects.update_or_create(
-                phone_number=formatted)
-            Check.objects.update_or_create(
-                batch=batch_id,
-                phone_number=obj
-            )
+        obj, created = PhoneNumber.objects.update_or_create(
+            phone_number=phone_number)
+        Check.objects.update_or_create(
+            batch=batch_id,
+            phone_number=obj
+        )
 
 
 def get_names(client, phone_number):

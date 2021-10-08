@@ -22,7 +22,7 @@ class UploadForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                'Upload CSV containing phone numbers and specify its column',
+                'Upload CSV containing phone numbers and specify its column name',
                 'file',
                 'phone_column'
             ),

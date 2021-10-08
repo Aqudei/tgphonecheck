@@ -2,14 +2,13 @@ from django.db import models
 from django.db.models.fields import CharField
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
 
 class PhoneNumber(models.Model):
 
-    phone_number = PhoneNumberField(_("Phone Number"))
+    phone_number = CharField(_("Phone Number"),max_length=100)
 
     class Meta:
         verbose_name = _("phonenumber")
@@ -67,7 +66,7 @@ class Upload(models.Model):
 class BotLogin(models.Model):
     batch = models.CharField(_("Batch"), max_length=100)
     done = models.BooleanField(_("Done"), default=False)
-    phone_number = PhoneNumberField(_("Phone Number"))
+    phone_number = CharField(_("Phone Number"),max_length=100)
     code = models.CharField(_("Code"), max_length=50,
                             default='', null=True, blank=True)
     two_factor = models.CharField(

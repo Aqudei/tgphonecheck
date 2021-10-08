@@ -89,17 +89,8 @@ def run_telethon(batch_uuid):
     """
     docstring
     """
-    if os.path.isfile("{}.session".format(PHONE_NUMBER)):
-        os.remove("{}.session".format(PHONE_NUMBER))
 
     client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
-    # print("Deleting session file...")
-    # tg_session_file = "{}.session".format(PHONE_NUMBER)
-    # if os.path.isfile(tg_session_file):
-    #     try:
-    #         os.remove(tg_session_file)
-    #     except:
-    #         print("Unable to delete Telethon session...")
 
     WAIT_SECONDS = 120
     print("Connecting to Telegram")

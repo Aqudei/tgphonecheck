@@ -28,7 +28,7 @@ def process_upload(batch_id, filename):
     """
     df = pd.read_csv(os.path.join(
         settings.MEDIA_ROOT, 'tmp', filename), dtype='str')
-    # df['PhoneNumbers'] = df['PhoneNumbers'].astype('str')
+
     for item in df['PhoneNumbers']:
         # if not item.startswith("+"):
         #     item = "+{}".format(item)

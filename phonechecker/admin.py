@@ -16,3 +16,8 @@ class PhoneNumberAdmin(admin.ModelAdmin):
 @admin.register(BotLogin)
 class BotLoginAdmin(admin.ModelAdmin):
     list_display = ('batch', 'done', 'phone_number', 'code', 'two_factor')
+
+
+@admin.register(Upload)
+class UploadAdmin(admin.ModelAdmin):
+    list_display = ('phone_column', 'file', 'remarks')

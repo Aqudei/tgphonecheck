@@ -45,6 +45,23 @@ class Check(models.Model):
         return reverse("check_detail", kwargs={"pk": self.pk})
 
 
+class Upload(models.Model):
+
+    file = models.FileField(_("Upload"), upload_to=None, max_length=100)
+    phone_column = models.IntegerField(_("Phone Column"), default=-1)
+    remarks = models.TextField(_("Remarks"), null=True, blank=True, default='')
+
+    class Meta:
+        verbose_name = _("upload")
+        verbose_name_plural = _("uploads")
+
+    def __str__(self):
+        return "{}".format(self.file)
+
+    def get_absolute_url(self):
+        return reverse("upload_detail", kwargs={"pk": self.pk})
+
+
 class BotLogin(models.Model):
     batch = models.CharField(_("Batch"), max_length=100)
     done = models.BooleanField(_("Done"), default=False)

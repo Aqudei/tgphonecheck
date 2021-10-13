@@ -119,7 +119,7 @@ def run_telethon(batch_uuid):
             return
 
         print("Code received!")
-        client.sign_in(PHONE_NUMBER, login.code)
+        client.sign_in(login.phone_number, login.code)
 
     print("Looking up numbers...")
     result = lookup_numbers(client, batch_uuid)

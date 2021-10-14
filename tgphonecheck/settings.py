@@ -157,3 +157,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # BACKGROUND TASKS SETTINGS
 # MAX_ATTEMPTS = 1
 LOGIN_URL = '/admin/login'
+LOGIN_REDIRECT_URL = ''

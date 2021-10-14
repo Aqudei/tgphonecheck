@@ -4,6 +4,20 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
 
+class LoginForm(forms.Form):
+    """
+    docstring
+    """
+    username = forms.CharField()
+    password = forms.PasswordInput()
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(
+            Submit('Login', 'Login', css_class='btn-primary'))
+
+
 class LoginPhoneNumberForm(forms.Form):
     """TelethonLoginForm definition."""
     phone_number = forms.CharField()

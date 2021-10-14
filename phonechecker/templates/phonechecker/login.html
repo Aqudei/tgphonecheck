@@ -1,0 +1,14 @@
+{% extends 'phonechecker/base.html' %} {% load crispy_forms_tags %}
+
+
+{% block heading %}
+  Login
+{% endblock heading %}
+
+{% block content %}
+
+<form action="{% url 'login' %}" method="post">
+  {% crispy form %}
+</form>
+
+{% endblock content %}

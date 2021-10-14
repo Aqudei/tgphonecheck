@@ -23,7 +23,11 @@ def mysql(request):
         if form.is_valid():
             batch_id = str(uuid4())
             request.session['batch_id'] = batch_id
+            obj = form.save(commit=False)
+            obj.batch_id = batch_id
             form.save()
+            tasks.mysql_import(batch_id)
+            tasks.run_telethon(batch_id)
             return redirect('tglogin')
         else:
             print(form.errors)
@@ -48,7 +52,7 @@ def upload(request):
             obj = form.save(commit=False)
             obj.batch_id = batch_id
             obj.save()
-            tasks.process_upload(batch_id)
+            tasks.csv_import(batch_id)
             tasks.run_telethon(batch_id)
             return redirect('tglogin')
         else:

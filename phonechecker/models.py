@@ -91,7 +91,8 @@ class BotLogin(models.Model):
 
 
 class MySql(models.Model):
-
+    batch_id = models.CharField(
+        _("Batch Id"), max_length=100, null=True, blank=True, default='')
     db_name = models.CharField(_("DB Name"), max_length=100)
     db_username = models.CharField(_("DB Username"), max_length=100)
     db_password = models.CharField(_("DB Password"), max_length=100)

@@ -31,7 +31,15 @@ def batch(iterable, n=1):
 
 
 @background()
-def process_upload(batch_id):
+def mysql_import(batch_id):
+    """
+    docstring
+    """
+    pass
+
+
+@background()
+def csv_import(batch_id):
     """
     docstring
     """

@@ -23,7 +23,7 @@ API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 PHONE_NUMBER = os.getenv("PHONE_NUMBER")
 
-BATCH_SIZE = 50
+BATCH_SIZE = 40
 
 
 def batch(iterable, n=1):

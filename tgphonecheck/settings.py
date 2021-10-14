@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'phonechecker.apps.PhonecheckerConfig',
-    'background_task'
+    # 'background_task'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

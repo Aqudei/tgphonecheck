@@ -15,7 +15,7 @@ from telethon import TelegramClient, errors, events
 from telethon.tl.types import InputPhoneContact
 from telethon import functions, types
 import MySQLdb
-
+from celery import shared_task
 load_dotenv()
 
 
@@ -32,7 +32,8 @@ def batch(iterable, n=1):
         yield iterable[ndx:min(ndx + n, l)]
 
 
-@background()
+# @background()
+@shared_task
 def mysql_import(batch_id):
     """
     docstring
@@ -53,7 +54,8 @@ def mysql_import(batch_id):
     cursor.close()
 
 
-@background()
+# @background()
+@shared_task
 def csv_import(batch_id):
     """
     docstring
@@ -143,7 +145,8 @@ def validate_numbers(client, batch_uuid):
         raise
 
 
-@background(schedule=3)
+# @background(schedule=3)
+@shared_task
 def run_telethon(batch_uuid):
     """
     docstring

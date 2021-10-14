@@ -157,3 +157,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # BACKGROUND TASKS SETTINGS
 # MAX_ATTEMPTS = 1
 LOGIN_URL = 'login'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/8'

@@ -1,4 +1,5 @@
 from time import sleep, timezone
+
 from background_task import background
 from django.db.models.fields import CharField
 from telethon.sync import TelegramClient
@@ -19,6 +20,14 @@ load_dotenv()
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 PHONE_NUMBER = os.getenv("PHONE_NUMBER")
+
+BATCH_SIZE = 30
+
+
+def batch(iterable, n=1):
+    l = len(iterable)
+    for ndx in range(0, l, n):
+        yield iterable[ndx:min(ndx + n, l)]
 
 
 @background()
@@ -68,7 +77,7 @@ def get_names(client, phone_number):
         raise
 
 
-def lookup_numbers(client, batch_uuid):
+def validate_numbers(client, batch_uuid):
     '''
     The function uses the get_api_response function to first check if the user exists and if it does, then it returns the first user name and the last user name.
     '''
@@ -76,9 +85,30 @@ def lookup_numbers(client, batch_uuid):
     numbers = Check.objects.filter(batch=batch_uuid).values_list(
         'phone_number__phone_number', flat=True)
     try:
-        for phone in numbers:
-            api_res = get_names(client, phone)
-            result[phone] = api_res
+        for b in batch(numbers, BATCH_SIZE):
+            for phone in b:
+                response = get_names(client, phone)
+                result[phone] = response
+
+                phone_number = PhoneNumber.objects.filter(
+                    phone_number=phone).first()
+                if not phone_number:
+                    continue
+
+                check = Check.objects.filter(
+                    batch=batch_uuid, phone_number=phone_number).first()
+                if not check:
+                    continue
+
+                if response is None:
+                    check.result = 2
+                elif response.startswith('ERROR'):
+                    check.result = 3
+                else:
+                    check.result = 1
+                check.timestamp = timezone.now()
+                check.save()
+            sleep(300)
         return result
     except:
         raise
@@ -122,25 +152,25 @@ def run_telethon(batch_uuid):
         client.sign_in(login.phone_number, login.code)
 
     print("Looking up numbers...")
-    result = lookup_numbers(client, batch_uuid)
+    result = validate_numbers(client, batch_uuid)
     print(result)
 
-    for phone in result:
-        r = result[phone]
-        phone_number = PhoneNumber.objects.filter(phone_number=phone).first()
-        if not phone_number:
-            continue
+    # for phone in result:
+    #     r = result[phone]
+    #     phone_number = PhoneNumber.objects.filter(phone_number=phone).first()
+    #     if not phone_number:
+    #         continue
 
-        check = Check.objects.filter(
-            batch=batch_uuid, phone_number=phone_number).first()
-        if not check:
-            continue
+    #     check = Check.objects.filter(
+    #         batch=batch_uuid, phone_number=phone_number).first()
+    #     if not check:
+    #         continue
 
-        if r is None:
-            check.result = 2
-        elif r.startswith('ERROR'):
-            check.result = 3
-        else:
-            check.result = 1
-        check.timestamp = timezone.now()
-        check.save()
+    #     if r is None:
+    #         check.result = 2
+    #     elif r.startswith('ERROR'):
+    #         check.result = 3
+    #     else:
+    #         check.result = 1
+    #     check.timestamp = timezone.now()
+    #     check.save()

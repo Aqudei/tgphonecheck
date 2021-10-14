@@ -7,24 +7,31 @@ import requests
 import argparse
 import os
 from getpass import getpass
-
+import csv
 load_dotenv()
 
 result = {}
 
 API_ID = os.getenv('API_ID')
 API_HASH = os.getenv('API_HASH')
-PHONE_NUMBER = os.getenv('PHONE_NUMBER')
+PHONE_NUMBER = "+639672874486"
 API_URL = os.getenv('API_URL')
 
-client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
+client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)\
+
+
+
+def batch(iterable, n=1):
+    l = len(iterable)
+    for ndx in range(0, l, n):
+        yield iterable[ndx:min(ndx + n, l)]
 
 
 async def get_names(phone_number):
     try:
         contact = InputPhoneContact(
             client_id=0, phone=phone_number, first_name="", last_name="")
-        contacts = await client(functions.contacts.ImportContactsRequest([contact]))
+        contacts = await client(functions.contacts.ImportContactsRequest(contacts=[contact]))
         user = contacts.to_dict()['users'][0]
         username = user['username']
         if not username:
@@ -44,46 +51,54 @@ async def get_names(phone_number):
         raise
 
 
-async def user_validator():
+async def user_validator(phones):
     '''
     The function uses the get_api_response function to first check if the user exists and if it does, then it returns the first user name and the last user name.
     '''
-    input_phones = input("Phone numbers: ")
-    phones = input_phones.split()
-    try:
-        for phone in phones:
-            api_res = await get_names(phone)
-            result[phone] = api_res
-    except:
-        raise
+    processed = 0
+    for b in batch(phones, 100):
+        try:
+            for phone in b:
+                api_res = await get_names(phone)
+                result[phone] = api_res
+                processed += 1
+        except:
+            raise
+        finally:
+            print("Total processed: {}".format(processed))
 
 
-async def main():
+async def main(args):
     await client.connect()
     user_authorized = await client.is_user_authorized()
     if not user_authorized:
         await client.send_code_request(PHONE_NUMBER)
-        response = requests.get(
-            API_URL + '/checker/botlogin/{}'.format(PHONE_NUMBER))
-        response_json = response.json()
-        while response_json == {} or response_json.get('code') == '':
-            await asyncio.sleep(1)
 
         try:
-            await client.sign_in(PHONE_NUMBER, response_json['code'])
+            await client.sign_in(PHONE_NUMBER, input("Code: "))
             # await client.sign_in(PHONE_NUMBER, input(
             #     'Enter the code (sent on telegram): '))
         except errors.SessionPasswordNeededError:
-            pw = getpass(
+            pw = input(
                 'Two-Step Verification enabled. Please enter your account password: ')
             client.sign_in(password=pw)
-    await user_validator()
+
+    phones = []
+    if args.csv:
+        with open(args.csv, "rt") as infile:
+            reader = csv.reader(infile)
+            for idx, item in enumerate(reader):
+                if idx == 0:
+                    continue
+                phones.append(item[0])
+
+    await user_validator(phones)
     print(result)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Check to see if a phone number is a valid Telegram account')
-
+    parser.add_argument("--csv")
     args = parser.parse_args()
-    client.loop.run_until_complete(main())
+    client.loop.run_until_complete(main(args))

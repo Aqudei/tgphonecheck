@@ -117,3 +117,4 @@ GitHub.sublime-settings
 static/
 *.session
 *.session-journal
+*.csv

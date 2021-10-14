@@ -53,6 +53,7 @@ def process_upload(batch_id):
 
 
 def get_names(client, phone_number):
+    username = ''
     try:
         contact = InputPhoneContact(
             client_id=0, phone=phone_number, first_name="", last_name="")
@@ -62,19 +63,22 @@ def get_names(client, phone_number):
         if not username:
             print(
                 "*"*5 + f' Response detected, but no user name returned by the API for the number: {phone_number} ' + "*"*5)
-            del_usr = client(
-                functions.contacts.DeleteContactsRequest(id=[user['id']]))
-            return
+            try:
+                del_usr = client(
+                    functions.contacts.DeleteContactsRequest(id=[user['id']]))
+            except:
+                pass
+
         else:
-            del_usr = client(
-                functions.contacts.DeleteContactsRequest(id=[username]))
-            return username
-    except IndexError as e:
-        return f'ERROR: there was no response for the phone number: {phone_number}'
-    except TypeError as e:
-        return f"TypeError: {e}. --> The error might have occured due to the inability to delete the {phone_number} from the contact list."
-    except:
-        raise
+            try:
+                del_usr = client(
+                    functions.contacts.DeleteContactsRequest(id=[username]))
+            except:
+                pass
+
+        return username
+    except Exception as e:
+        return f'ERROR! There was error in response for the phone number <{phone_number}>. {e}'
 
 
 def validate_numbers(client, batch_uuid):
@@ -104,6 +108,7 @@ def validate_numbers(client, batch_uuid):
                     check.result = 2
                 elif response.startswith('ERROR'):
                     check.result = 3
+                    check.debug = response
                 else:
                     check.result = 1
                 check.timestamp = timezone.now()

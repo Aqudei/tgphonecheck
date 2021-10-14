@@ -1,3 +1,4 @@
+from logging import debug
 from django.db import models
 from django.db.models.fields import CharField
 from django.urls import reverse
@@ -32,6 +33,7 @@ class Check(models.Model):
     result = models.IntegerField(
         _("Result"), choices=RESULT_CHOICES, default=0)
     batch = models.CharField(_("Batch"), max_length=80, default='dummy-uuid')
+    debug = models.TextField(_("Debug"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("check")

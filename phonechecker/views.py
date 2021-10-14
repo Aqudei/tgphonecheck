@@ -52,7 +52,9 @@ def upload(request):
                           "batch_id": batch_id}, files=request.FILES)
         if form.is_valid():
             # Process here
-            obj = form.save()
+            obj = form.save(commit=False)
+            obj.batch_id = batch_id
+            obj.save()
             tasks.csv_import.delay(batch_id)
             tasks.run_telethon.delay(batch_id)
             return redirect('tglogin')

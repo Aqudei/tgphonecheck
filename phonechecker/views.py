@@ -12,7 +12,7 @@ import os
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='/admin/login')
+@login_required
 def mysql(request):
     """
     docstring
@@ -36,7 +36,7 @@ def mysql(request):
             return render(request, 'phonechecker/mysql.html', {"form": form})
 
 
-@login_required(login_url='/admin/login')
+@login_required
 def upload(request):
     """
     docstring

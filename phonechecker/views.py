@@ -10,6 +10,7 @@ from uuid import uuid4
 from phonechecker import tasks
 import os
 from django.contrib.auth.decorators import login_required
+import urllib.parse
 
 
 @login_required
@@ -24,13 +25,14 @@ def mysql(request):
         form = MySqlForm(request.POST)
         if form.is_valid():
             batch_id = str(uuid4())
-            request.session['batch_id'] = batch_id
             obj = form.save(commit=False)
             obj.batch_id = batch_id
             form.save()
-            tasks.mysql_import.delay(batch_id)
-            tasks.run_telethon.delay(batch_id)
-            return redirect('tglogin')
+            # tasks.mysql_import.delay(batch_id)
+            # tasks.run_telethon.delay(batch_id)
+            redirect_url = "{}?{}".format(reverse(
+                'tglogin'), urllib.parse.urlencode({'batch_id': batch_id}))
+            return redirect(redirect_url)
         else:
             print(form.errors)
             return render(request, 'phonechecker/mysql.html', {"form": form})
@@ -67,17 +69,20 @@ def tglogin(request):
     """
     docstring
     """
-    batch_id = request.session.get('batch_id')
-    if not batch_id:
-        return redirect('upload')
 
     if request.method == 'GET':
-        form1 = LoginPhoneNumberForm()
-        form2 = LoginCodeForm()
+        batch_id = request.GET['batch_id']
+        if not batch_id:
+            return redirect('upload')
+
+        form1 = LoginPhoneNumberForm(initial={"batch_id": batch_id})
+        form2 = LoginCodeForm(initial={"batch_id": batch_id})
         return render(request, 'phonechecker/tglogin.html', {"form1": form1, "form2": form2})
     else:
         form1 = LoginPhoneNumberForm(request.POST)
         form2 = LoginCodeForm(request.POST)
+        batch_id = request.POST['batch_id']
+        created = False
         if 'submit-phone' in request.POST:
             print("Phone number submitted")
             if form1.is_valid():

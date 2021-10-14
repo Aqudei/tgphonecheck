@@ -1,15 +1,23 @@
 from django import forms
 from phonechecker.models import *
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
+from crispy_forms.layout import Field, Layout, Fieldset, ButtonHolder, Submit
+
+from phonechecker.tasks import batch
+
 
 class LoginPhoneNumberForm(forms.Form):
     """TelethonLoginForm definition."""
     phone_number = forms.CharField()
+    batch_id = forms.CharField()
 
     def __init__(self, *args, **kwargs):
         super(LoginPhoneNumberForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('phone_number'),
+            Field('batch_id',type="hidden")
+        )
         self.helper.add_input(
             Submit('submit-phone', 'Submit Phone Number', css_class='btn-primary'))
 
@@ -17,10 +25,15 @@ class LoginPhoneNumberForm(forms.Form):
 class LoginCodeForm(forms.Form):
     """TelethonLoginForm definition."""
     code = forms.CharField()
+    batch_id = forms.CharField()
 
     def __init__(self, *args, **kwargs):
         super(LoginCodeForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('code'),
+            Field('batch_id',type="hidden")
+        )
         self.helper.add_input(
             Submit('submit-code', 'Submit Code', css_class='btn-primary'))
 

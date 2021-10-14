@@ -9,8 +9,10 @@ from django.utils import timesince, timezone
 from uuid import uuid4
 from phonechecker import tasks
 import os
+from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='/admin/login')
 def mysql(request):
     """
     docstring
@@ -34,6 +36,7 @@ def mysql(request):
             return render(request, 'phonechecker/mysql.html', {"form": form})
 
 
+@login_required(login_url='/admin/login')
 def upload(request):
     """
     docstring

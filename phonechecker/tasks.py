@@ -10,10 +10,12 @@ import csv
 import phonenumbers
 import pandas as pd
 from django.utils import timesince, timezone
-from phonechecker.models import BotLogin, Check, PhoneNumber, Upload
+from phonechecker.models import BotLogin, Check, MySql, PhoneNumber, Upload
 from telethon import TelegramClient, errors, events
 from telethon.tl.types import InputPhoneContact
 from telethon import functions, types
+import MySQLdb
+
 load_dotenv()
 
 
@@ -35,7 +37,20 @@ def mysql_import(batch_id):
     """
     docstring
     """
-    pass
+    db_info = MySql.objects.filter(batch_id=batch_id).first()
+    if not db_info:
+        return
+
+    db = MySQLdb.connect(host=db_info.db_host, user=db_info.db_username,
+                         passwd=db_info.db_password, db=db_info.db_name, port=db_info.db_port)
+    cursor = db.cursor()
+    cursor.execute("""SELECT %s FROM %s""" %
+                   (db_info.db_column, db_info.db_table))
+    items = cursor.fetchall()
+    for item in items:
+        print(item)
+
+    cursor.close()
 
 
 @background()

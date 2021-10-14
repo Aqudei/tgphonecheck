@@ -155,4 +155,4 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # BACKGROUND TASKS SETTINGS
-MAX_ATTEMPTS = 1
+# MAX_ATTEMPTS = 1

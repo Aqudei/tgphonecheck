@@ -26,6 +26,29 @@ class LoginCodeForm(forms.Form):
             Submit('submit-code', 'Submit Code', css_class='btn-primary'))
 
 
+class MySqlForm(forms.ModelForm):
+    """
+    docstring
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(MySqlForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Setup MySQL Connection',
+                'db_name',
+                'db_username',
+                'db_password',
+                'db_host',
+                'db_port'
+            ),
+        )
+
+        self.helper.add_input(
+            Submit('submit', 'Submit', css_class='btn-primary'))
+
+
 class UploadForm(forms.ModelForm):
     """
     docstring

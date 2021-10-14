@@ -23,3 +23,9 @@ class BotLoginAdmin(admin.ModelAdmin):
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
     list_display = ('phone_column', 'file', 'remarks', 'batch_id')
+
+
+@admin.register(MySql)
+class MySqlAdmin(admin.ModelAdmin):
+    list_display = ('db_name', 'db_username', 'db_password',
+                    'db_host', 'db_port', 'timestamp')

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import generic
-from phonechecker.forms import LoginCodeForm, LoginPhoneNumberForm, UploadForm
+from phonechecker.forms import LoginCodeForm, LoginPhoneNumberForm, MySqlForm, UploadForm
 from phonechecker.models import *
 from phonechecker.serializers import *
 from rest_framework import views, generics, response, decorators
@@ -9,6 +9,25 @@ from django.utils import timesince, timezone
 from uuid import uuid4
 from phonechecker import tasks
 import os
+
+
+def mysql(request):
+    """
+    docstring
+    """
+    if request.method == 'GET':
+        form = MySqlForm()
+        return render(request, 'phonechecker/mysql.html', {"form": form})
+    else:
+        form = MySqlForm(request.POST)
+        if form.is_valid():
+            batch_id = str(uuid4())
+            request.session['batch_id'] = batch_id
+            form.save()
+            return redirect('tglogin')
+        else:
+            print(form.errors)
+            return render(request, 'phonechecker/mysql.html', {"form": form})
 
 
 def upload(request):

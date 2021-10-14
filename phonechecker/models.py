@@ -88,3 +88,24 @@ class BotLogin(models.Model):
 
     def get_absolute_url(self):
         return reverse("botlogin_detail", kwargs={"pk": self.pk})
+
+
+class MySql(models.Model):
+
+    db_name = models.CharField(_("DB Name"), max_length=100)
+    db_username = models.CharField(_("DB Username"), max_length=100)
+    db_password = models.CharField(_("DB Password"), max_length=100)
+    db_host = models.CharField(_("DB Host"), max_length=100)
+    db_port = models.IntegerField(_("DB Port"), default=3306)
+    timestamp = models.DateTimeField(
+        _("Timestamp"), auto_now=False, auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("mysql")
+        verbose_name_plural = _("mysqls")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("mysql_detail", kwargs={"pk": self.pk})

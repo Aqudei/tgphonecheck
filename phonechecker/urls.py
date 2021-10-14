@@ -18,6 +18,6 @@ from django.urls import path
 from phonechecker.views import *
 urlpatterns = [
     path('upload', upload, name='upload'),
-    path('mysql', upload, name='mysql'),
+    path('mysql', mysql, name='mysql'),
     path('tglogin', tglogin, name='tglogin')
 ]

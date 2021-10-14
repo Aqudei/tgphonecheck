@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import generic
-from phonechecker.forms import LoginCodeForm, LoginForm, LoginPhoneNumberForm, MySqlForm, UploadForm
+from phonechecker.forms import LoginCodeForm, LoginPhoneNumberForm, MySqlForm, UploadForm
 from phonechecker.models import *
 from phonechecker.serializers import *
 from rest_framework import views, generics, response, decorators
@@ -10,21 +10,6 @@ from uuid import uuid4
 from phonechecker import tasks
 import os
 from django.contrib.auth.decorators import login_required
-
-
-def login(request):
-    """
-    docstring
-    """
-    if request.method == 'GET':
-        form = LoginForm()
-        return render(request, 'phonechecker/login.html', {"form": form})
-    else:
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            pass
-        else:
-            return render(request, 'phonechecker/login.html', {"form": form})
 
 
 @login_required

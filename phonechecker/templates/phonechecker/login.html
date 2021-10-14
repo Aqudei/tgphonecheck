@@ -8,7 +8,10 @@
 {% block content %}
 
 <form action="{% url 'login' %}" method="post">
-  {% crispy form %}
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.GET.next }}" />
+  {{ form|crispy }}
+  <input class='btn btn-primary' type="submit" value="Login">
 </form>
 
 {% endblock content %}

@@ -111,6 +111,7 @@ def validate_numbers(client, batch_uuid):
                     check.debug = response
                 else:
                     check.result = 1
+                    check.username = response
                 check.timestamp = timezone.now()
                 check.save()
             sleep(300)

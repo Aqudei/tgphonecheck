@@ -34,6 +34,8 @@ class Check(models.Model):
         _("Result"), choices=RESULT_CHOICES, default=0)
     batch = models.CharField(_("Batch"), max_length=80, default='dummy-uuid')
     debug = models.TextField(_("Debug"), blank=True, null=True)
+    username = models.CharField(
+        _("Username"), max_length=250, null=True, blank=True)
 
     class Meta:
         verbose_name = _("check")

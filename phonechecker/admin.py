@@ -8,7 +8,8 @@ class CheckAdmin(admin.ModelAdmin):
     list_display = ('timestamp', 'phone_number', 'result',
                     'username', 'debug', 'batch')
     list_filter = ('result',)
-    search_fields = ('phone_number__phone_number', 'username', 'batch')
+    search_fields = ('phone_number__phone_number',
+                     'username', 'batch', 'debug')
 
 
 @admin.register(PhoneNumber)

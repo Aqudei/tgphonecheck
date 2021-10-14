@@ -1,8 +1,8 @@
 from time import sleep, timezone
-
 from background_task import background
 from django.db.models.fields import CharField
-from telethon.sync import TelegramClient
+from telethon.sync import TelegramClient, errors, functions, types
+from telethon.tl.types import InputPhoneContact
 import os
 from dotenv import load_dotenv
 from django.conf import settings
@@ -11,9 +11,7 @@ import phonenumbers
 import pandas as pd
 from django.utils import timesince, timezone
 from phonechecker.models import BotLogin, Check, MySql, PhoneNumber, Upload
-from telethon import TelegramClient, errors, events
-from telethon.tl.types import InputPhoneContact
-from telethon import functions, types
+
 import MySQLdb
 from celery import shared_task
 load_dotenv()
@@ -104,6 +102,8 @@ def get_names(client, phone_number):
                 print("Error deleting contact: {}".format(e))
 
         return username
+    except errors.FloodWaitError as e:
+        raise
     except Exception as e:
         return f'ERROR! There was error in response for the phone number <{phone_number}>. {e}'
 
@@ -113,23 +113,23 @@ def validate_numbers(client, batch_uuid):
     The function uses the get_api_response function to first check if the user exists and if it does, then it returns the first user name and the last user name.
     '''
     result = {}
-    numbers = Check.objects.filter(batch=batch_uuid).values_list(
-        'phone_number__phone_number', flat=True)
+    sleep_sec = 300
+    # numbers = Check.objects.filter(batch=batch_uuid, result__ne=4).values_list(
+    #     'phone_number__phone_number', flat=True)
     try:
-        for b in batch(numbers, BATCH_SIZE):
-            for phone in b:
-                response = get_names(client, phone)
-                result[phone] = response
-
-                phone_number = PhoneNumber.objects.filter(
-                    phone_number=phone).first()
-                if not phone_number:
-                    continue
-
-                check = Check.objects.filter(
-                    batch=batch_uuid, phone_number=phone_number).first()
-                if not check:
-                    continue
+        for batch in Check.objects.filter(batch=batch_uuid, result=0)[:BATCH_SIZE]:
+            for check in batch:
+                check.result = 4  # processing
+                check.save()
+                try:
+                    response = get_names(
+                        client, check.phone_number.phone_number)
+                    result[check] = response
+                except errors.FloodWaitError as e:
+                    sleep_sec = e.seconds+2
+                    check.result = 0
+                    check.save()
+                    break
 
                 if response is None:
                     check.result = 2
@@ -141,7 +141,7 @@ def validate_numbers(client, batch_uuid):
                     check.username = response
                 check.timestamp = timezone.now()
                 check.save()
-            sleep(300)
+            sleep(sleep_sec)
         return result
     except:
         raise

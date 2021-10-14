@@ -25,7 +25,7 @@ class PhoneNumber(models.Model):
 class Check(models.Model):
 
     RESULT_CHOICES = ((0, 'pending'), (1, 'has-tg'),
-                      (2, 'no-username'), (3, 'error'))
+                      (2, 'no-username'), (3, 'error'), (4, 'processing'))
     timestamp = models.DateTimeField(
         _("Timestamp"), auto_now=False, auto_now_add=True)
     phone_number = models.ForeignKey(PhoneNumber, verbose_name=_(

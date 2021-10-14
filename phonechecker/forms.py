@@ -48,6 +48,13 @@ class MySqlForm(forms.ModelForm):
         self.helper.add_input(
             Submit('submit', 'Submit', css_class='btn-primary'))
 
+    class Meta:
+        """
+        docstring
+        """
+        model = MySql
+        fields = '__all__'
+
 
 class UploadForm(forms.ModelForm):
     """

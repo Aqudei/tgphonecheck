@@ -78,6 +78,7 @@ def csv_import(batch_id):
 
 
 def get_names(client, phone_number):
+    print("Looking up names for phone_number: {}".format(phone_number))
     username = ''
     try:
         contact = InputPhoneContact(
@@ -91,15 +92,16 @@ def get_names(client, phone_number):
             try:
                 del_usr = client(
                     functions.contacts.DeleteContactsRequest(id=[user['id']]))
-            except:
-                pass
+            except Exception as e:
+                print("Error deleting contact: {}".format(e))
 
         else:
+            print("Found username: {}".format(username))
             try:
                 del_usr = client(
                     functions.contacts.DeleteContactsRequest(id=[username]))
-            except:
-                pass
+            except Exception as e:
+                print("Error deleting contact: {}".format(e))
 
         return username
     except Exception as e:
@@ -185,24 +187,3 @@ def run_telethon(batch_uuid):
 
     print("Looking up numbers...")
     result = validate_numbers(client, batch_uuid)
-    print(result)
-
-    # for phone in result:
-    #     r = result[phone]
-    #     phone_number = PhoneNumber.objects.filter(phone_number=phone).first()
-    #     if not phone_number:
-    #         continue
-
-    #     check = Check.objects.filter(
-    #         batch=batch_uuid, phone_number=phone_number).first()
-    #     if not check:
-    #         continue
-
-    #     if r is None:
-    #         check.result = 2
-    #     elif r.startswith('ERROR'):
-    #         check.result = 3
-    #     else:
-    #         check.result = 1
-    #     check.timestamp = timezone.now()
-    #     check.save()

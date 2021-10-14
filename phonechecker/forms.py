@@ -41,7 +41,9 @@ class MySqlForm(forms.ModelForm):
                 'db_username',
                 'db_password',
                 'db_host',
-                'db_port'
+                'db_port',
+                'db_table',
+                'db_column'
             ),
         )
 

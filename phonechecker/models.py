@@ -98,6 +98,9 @@ class MySql(models.Model):
     db_password = models.CharField(_("DB Password"), max_length=100)
     db_host = models.CharField(_("DB Host"), max_length=100)
     db_port = models.IntegerField(_("DB Port"), default=3306)
+    db_table = models.CharField(_("DB Table Name"), max_length=100)
+    db_column = models.CharField(_("DB Column Name"), max_length=100)
+
     timestamp = models.DateTimeField(
         _("Timestamp"), auto_now=False, auto_now_add=True)
 

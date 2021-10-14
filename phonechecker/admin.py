@@ -28,4 +28,4 @@ class UploadAdmin(admin.ModelAdmin):
 @admin.register(MySql)
 class MySqlAdmin(admin.ModelAdmin):
     list_display = ('db_name', 'db_username', 'db_password',
-                    'db_host', 'db_port', 'timestamp')
+                    'db_host', 'db_port', 'db_table', 'db_column', 'timestamp')

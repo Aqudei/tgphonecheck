@@ -59,8 +59,6 @@ class Upload(models.Model):
     batch_id = models.CharField(
         _("Batch Id"), max_length=100, null=True, blank=True, default='')
     remarks = models.TextField(_("Remarks"), null=True, blank=True, default='')
-    timestamp = models.DateTimeField(
-        _("Timestamp"), auto_now=False, auto_now_add=True)
 
     class Meta:
         verbose_name = _("upload")

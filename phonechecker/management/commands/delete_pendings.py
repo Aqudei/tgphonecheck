@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand, CommandError
-from background_task.models import Task
 from phonechecker.models import Check
 
 

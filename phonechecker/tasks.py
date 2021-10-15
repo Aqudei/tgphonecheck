@@ -127,7 +127,7 @@ def validate_numbers(client, batch_uuid):
                     result[check] = response
                 except errors.FloodWaitError as e:
                     sleep_sec = e.seconds+2
-                    check.result = 0
+                    check.result = 0 # pending
                     check.save()
                     break
 

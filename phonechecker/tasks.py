@@ -117,8 +117,8 @@ def validate_numbers(client, batch_uuid):
     # numbers = Check.objects.filter(batch=batch_uuid, result__ne=4).values_list(
     #     'phone_number__phone_number', flat=True)
     try:
-        while Check.objects.filter(batch=batch_uuid, result=0).exists():
-            for check in Check.objects.filter(batch=batch_uuid, result=0)[:BATCH_SIZE]:
+        while Check.objects.filter(result=0).exists():
+            for check in Check.objects.filter(result=0)[:BATCH_SIZE]:
                 check.result = 4  # processing
                 check.save()
                 try:
@@ -127,7 +127,7 @@ def validate_numbers(client, batch_uuid):
                     result[check] = response
                 except errors.FloodWaitError as e:
                     sleep_sec = e.seconds+2
-                    check.result = 0 # pending
+                    check.result = 0  # pending
                     check.save()
                     break
 

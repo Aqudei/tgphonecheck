@@ -20,7 +20,7 @@ class CheckAdmin(ImportExportActionModelAdmin):
                     'username', 'debug', 'source', 'batch')
     list_filter = ('result',)
     search_fields = ('phone_number__phone_number',
-                     'username', 'batch', 'debug')
+                     'username', 'batch', 'debug', 'source')
     resource_class = CheckResource
 
 

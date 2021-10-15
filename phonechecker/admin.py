@@ -2,6 +2,7 @@ from django.contrib import admin
 from phonechecker.models import *
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportActionModelAdmin
 # Register your models here.
 
 
@@ -14,7 +15,7 @@ class CheckResource(resources.ModelResource):
 
 
 @admin.register(Check)
-class CheckAdmin(ImportExportModelAdmin):
+class CheckAdmin(ImportExportActionModelAdmin):
     list_display = ('timestamp', 'phone_number', 'result',
                     'username', 'debug', 'source', 'batch')
     list_filter = ('result',)

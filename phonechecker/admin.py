@@ -1,16 +1,26 @@
 from django.contrib import admin
 from phonechecker.models import *
 from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 
 
+class CheckResource(resources.ModelResource):
+
+    class Meta:
+        model = Check
+        fields = ('timestamp', 'phone_number__phone_number',
+                  'result', 'username', 'source')
+
+
 @admin.register(Check)
-class CheckAdmin(admin.ModelAdmin):
+class CheckAdmin(ImportExportModelAdmin):
     list_display = ('timestamp', 'phone_number', 'result',
                     'username', 'debug', 'source', 'batch')
     list_filter = ('result',)
     search_fields = ('phone_number__phone_number',
                      'username', 'batch', 'debug')
+    resource_class = CheckResource
 
 
 @admin.register(PhoneNumber)
@@ -32,11 +42,3 @@ class UploadAdmin(admin.ModelAdmin):
 class MySqlAdmin(admin.ModelAdmin):
     list_display = ('db_name', 'db_username', 'db_password',
                     'db_host', 'db_port', 'db_table', 'db_column', 'timestamp')
-
-
-class BookResource(resources.ModelResource):
-
-    class Meta:
-        model = Check
-        fields = ('timestamp', 'phone_number__phone_number',
-                  'result', 'username', 'source')

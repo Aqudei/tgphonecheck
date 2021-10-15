@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'tgphonecheck.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-if 'win32' in sys.platform:
+if 'win32' in sys.platform.lower():
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

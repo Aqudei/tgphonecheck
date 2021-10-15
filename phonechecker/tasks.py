@@ -68,7 +68,7 @@ def csv_import(batch_id):
         # if not item.startswith("+"):
         #     item = "+{}".format(item)
         obj, created = PhoneNumber.objects.update_or_create(
-            phone_number=phone_number)
+            phone_number=phone_number.strip())
         Check.objects.update_or_create(
             batch=batch_id,
             phone_number=obj,

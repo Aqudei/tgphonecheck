@@ -8,6 +8,7 @@ import argparse
 import os
 from getpass import getpass
 import csv
+from time import sleep
 load_dotenv()
 
 result = {}
@@ -56,16 +57,21 @@ async def user_validator(phones):
     The function uses the get_api_response function to first check if the user exists and if it does, then it returns the first user name and the last user name.
     '''
     processed = 0
+    sleep_secs = 200
     for b in batch(phones, 100):
         try:
             for phone in b:
                 api_res = await get_names(phone)
                 result[phone] = api_res
                 processed += 1
+        except errors.FloodWaitError as e:
+            sleep_secs = e.seconds
         except:
             raise
         finally:
             print("Total processed: {}".format(processed))
+
+        sleep(sleep_secs)
 
 
 async def main(args):

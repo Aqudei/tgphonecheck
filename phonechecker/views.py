@@ -49,7 +49,6 @@ def upload(request):
 
     if request.method == 'POST':
         batch_id = str(uuid4())
-        request.session['batch_id'] = batch_id
         form = UploadForm(request.POST, initial={
                           "batch_id": batch_id}, files=request.FILES)
         if form.is_valid():
@@ -59,7 +58,9 @@ def upload(request):
             obj.save()
             tasks.csv_import.delay(batch_id)
             tasks.run_telethon.delay(batch_id)
-            return redirect('tglogin')
+            redirect_url = "{}?{}".format(reverse(
+                'tglogin'), urllib.parse.urlencode({'batch_id': batch_id}))
+            return redirect(redirect_url)
         else:
             print(form.errors)
             return render(request, 'phonechecker/upload.html', {"form": form})
@@ -71,7 +72,7 @@ def tglogin(request):
     """
 
     if request.method == 'GET':
-        batch_id = request.GET['batch_id']
+        batch_id = request.GET.get('batch_id')
         if not batch_id:
             return redirect('upload')
 

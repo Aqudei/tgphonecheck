@@ -6,7 +6,7 @@ from phonechecker.models import *
 @admin.register(Check)
 class CheckAdmin(admin.ModelAdmin):
     list_display = ('timestamp', 'phone_number', 'result',
-                    'username', 'debug', 'batch')
+                    'username', 'debug', 'source', 'batch')
     list_filter = ('result',)
     search_fields = ('phone_number__phone_number',
                      'username', 'batch', 'debug')

@@ -37,6 +37,8 @@ class Check(models.Model):
     debug = models.TextField(_("Debug"), blank=True, null=True)
     username = models.CharField(
         _("Username"), max_length=250, null=True, blank=True)
+    source = models.CharField(
+        _("Source"), max_length=250, null=True, blank=True)
 
     class Meta:
         verbose_name = _("check")

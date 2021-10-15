@@ -71,7 +71,10 @@ def csv_import(batch_id):
             phone_number=phone_number)
         Check.objects.update_or_create(
             batch=batch_id,
-            phone_number=obj
+            phone_number=obj,
+            defaults={
+                "source": str(upload)
+            }
         )
 
 

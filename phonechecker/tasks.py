@@ -117,8 +117,8 @@ def validate_numbers(client, batch_uuid):
     # numbers = Check.objects.filter(batch=batch_uuid, result__ne=4).values_list(
     #     'phone_number__phone_number', flat=True)
     try:
-        for batch in Check.objects.filter(batch=batch_uuid, result=0)[:BATCH_SIZE]:
-            for check in batch:
+        while Check.objects.filter(batch=batch_uuid, result=0).exists():
+            for check in Check.objects.filter(batch=batch_uuid, result=0)[:BATCH_SIZE]:
                 check.result = 4  # processing
                 check.save()
                 try:

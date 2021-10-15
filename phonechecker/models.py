@@ -2,6 +2,7 @@ from logging import debug
 from django.db import models
 from django.db.models.fields import CharField
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 # Create your models here.
@@ -56,13 +57,15 @@ class Upload(models.Model):
     batch_id = models.CharField(
         _("Batch Id"), max_length=100, null=True, blank=True, default='')
     remarks = models.TextField(_("Remarks"), null=True, blank=True, default='')
+    timestamp = models.DateTimeField(
+        _("Timestamp"), auto_now=False, auto_now_add=True)
 
     class Meta:
         verbose_name = _("upload")
         verbose_name_plural = _("uploads")
 
     def __str__(self):
-        return "{}".format(self.file)
+        return "{}-{}".format(self.phone_column, self.file)
 
     def get_absolute_url(self):
         return reverse("upload_detail", kwargs={"pk": self.pk})
@@ -109,7 +112,8 @@ class MySql(models.Model):
         verbose_name_plural = _("mysqls")
 
     def __str__(self):
-        return self.name
+        return "{}-{}-{}-{}-{}-{}-{}".format(
+            self.db_name, self.db_username, self.db_host, self.db_port, self.db_table, self.db_column, self.timestamp)
 
     def get_absolute_url(self):
         return reverse("mysql_detail", kwargs={"pk": self.pk})

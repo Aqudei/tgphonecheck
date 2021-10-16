@@ -85,24 +85,20 @@ def get_names(client, phone_number):
         contact = InputPhoneContact(
             client_id=0, phone=phone_number, first_name="", last_name="")
         contacts = client(functions.contacts.ImportContactsRequest([contact]))
+        if len(contacts.to_dict()['users']) <= 0:
+            return f'ERROR! The phone number <{phone_number}> was not found!'
+
         user = contacts.to_dict()['users'][0]
         username = user['username']
         if not username:
             print(
                 "*"*5 + f' Response detected, but no user name returned by the API for the number: {phone_number} ' + "*"*5)
-            try:
-                del_usr = client(
-                    functions.contacts.DeleteContactsRequest(id=[user['id']]))
-            except Exception as e:
-                print("Error deleting contact: {}".format(e))
 
-        else:
-            print("Found username: {}".format(username))
-            try:
-                del_usr = client(
-                    functions.contacts.DeleteContactsRequest(id=[username]))
-            except Exception as e:
-                print("Error deleting contact: {}".format(e))
+        try:
+            del_usr = client(
+                functions.contacts.DeleteContactsRequest(id=[user['id']]))
+        except Exception as e:
+            print("Error deleting contact: {}".format(e))
 
         return username
     except errors.FloodWaitError as e:

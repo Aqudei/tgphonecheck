@@ -176,8 +176,6 @@ def run_telethon(batch_uuid):
         return
 
     client = TelegramClient(login.phone_number, API_ID, API_HASH)
-
-    print("Connecting to Telegram")
     client.connect()
 
     is_user_authorized = client.is_user_authorized()

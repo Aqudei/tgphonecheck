@@ -1,7 +1,7 @@
 from django import forms
 from phonechecker.models import *
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Fieldset, ButtonHolder, Submit
+from crispy_forms.layout import HTML, Field, Layout, Fieldset, ButtonHolder, Submit
 
 from phonechecker.tasks import batch
 

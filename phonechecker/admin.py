@@ -26,7 +26,7 @@ class CheckAdmin(ImportExportActionModelAdmin):
 
 @admin.register(PhoneNumber)
 class PhoneNumberAdmin(admin.ModelAdmin):
-    list_display = ('phone_number',)
+    list_display = ('phone_number', 'timestamp')
 
 
 @admin.register(BotLogin)

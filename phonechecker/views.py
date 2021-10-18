@@ -19,19 +19,18 @@ def mysql(request):
     docstring
     """
     if request.method == 'GET':
-        form = MySqlForm()
+        batch_id = str(uuid4())
+        form = MySqlForm(initial={
+            "batch_id": batch_id})
         return render(request, 'phonechecker/mysql.html', {"form": form})
     else:
         form = MySqlForm(request.POST)
         if form.is_valid():
-            batch_id = str(uuid4())
-            obj = form.save(commit=False)
-            obj.batch_id = batch_id
-            form.save()
-            # tasks.mysql_import.delay(batch_id)
-            # tasks.run_telethon.delay(batch_id)
+            obj = form.save()
+            tasks.mysql_import.delay(obj.id)
+            tasks.run_telethon.delay(obj.batch_id)
             redirect_url = "{}?{}".format(reverse(
-                'tglogin'), urllib.parse.urlencode({'batch_id': batch_id}))
+                'tglogin'), urllib.parse.urlencode({'batch_id': obj.batch_id}))
             return redirect(redirect_url)
         else:
             print(form.errors)
@@ -44,22 +43,20 @@ def upload(request):
     docstring
     """
     if request.method == 'GET':
-        form = UploadForm()
+        batch_id = str(uuid4())
+        form = UploadForm(initial={
+                          "batch_id": batch_id})
         return render(request, 'phonechecker/upload.html', {"form": form})
 
     if request.method == 'POST':
-        batch_id = str(uuid4())
-        form = UploadForm(request.POST, initial={
-                          "batch_id": batch_id}, files=request.FILES)
+        form = UploadForm(request.POST, files=request.FILES)
         if form.is_valid():
             # Process here
-            obj = form.save(commit=False)
-            obj.batch_id = batch_id
-            obj.save()
-            tasks.csv_import.delay(batch_id)
-            tasks.run_telethon.delay(batch_id)
+            obj = form.save()
+            tasks.csv_import.delay(obj.id)
+            tasks.run_telethon.delay(obj.batch_id)
             redirect_url = "{}?{}".format(reverse(
-                'tglogin'), urllib.parse.urlencode({'batch_id': batch_id}))
+                'tglogin'), urllib.parse.urlencode({'batch_id': obj.batch_id}))
             return redirect(redirect_url)
         else:
             print(form.errors)

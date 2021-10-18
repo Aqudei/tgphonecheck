@@ -11,6 +11,8 @@ from django.utils.translation import gettext as _
 class PhoneNumber(models.Model):
 
     phone_number = CharField(_("Phone Number"), max_length=100)
+    timestamp = models.DateTimeField(
+        _("Timestamp"), auto_now=True, null=True, blank=True)
 
     class Meta:
         verbose_name = _("phonenumber")

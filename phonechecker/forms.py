@@ -16,7 +16,7 @@ class LoginPhoneNumberForm(forms.Form):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('phone_number'),
-            Field('batch_id',type="hidden")
+            Field('batch_id', type="hidden")
         )
         self.helper.add_input(
             Submit('submit-phone', 'Submit Phone Number', css_class='btn-primary'))
@@ -32,7 +32,7 @@ class LoginCodeForm(forms.Form):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('code'),
-            Field('batch_id',type="hidden")
+            Field('batch_id', type="hidden")
         )
         self.helper.add_input(
             Submit('submit-code', 'Submit Code', css_class='btn-primary'))
@@ -79,6 +79,7 @@ class UploadForm(forms.ModelForm):
         super(UploadForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
+            'batch_id',
             Fieldset(
                 'Upload CSV containing phone numbers and specify its column name',
                 'file',
@@ -95,3 +96,4 @@ class UploadForm(forms.ModelForm):
         """
         model = Upload
         fields = '__all__'
+        widgets = {'batch_id': forms.HiddenInput()}

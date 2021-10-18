@@ -32,11 +32,11 @@ def batch(iterable, n=1):
 
 # @background()
 @shared_task
-def mysql_import(batch_id):
+def mysql_import(mysql_id):
     """
     docstring
     """
-    db_info = MySql.objects.filter(batch_id=batch_id).first()
+    db_info = MySql.objects.filter(pk=mysql_id).first()
     if not db_info:
         return
 
@@ -47,18 +47,30 @@ def mysql_import(batch_id):
                    (db_info.db_column, db_info.db_table))
     items = cursor.fetchall()
     for item in items:
-        print(item)
-
+        print("Importing {}...".format(item[0]))
+        phoneobj, created = PhoneNumber.objects.update_or_create(
+            phone_number="{}".format(item[0]).strip(),
+            defaults={
+                "timestamp": timezone.now()
+            }
+        )
+        Check.objects.update_or_create(
+            phone_number=phoneobj,
+            batch=db_info.batch_id,
+            defaults={
+                "source": "mysql-{}".format(db_info)
+            }
+        )
     cursor.close()
 
 
 # @background()
 @shared_task
-def csv_import(batch_id):
+def csv_import(upload_id):
     """
     docstring
     """
-    upload = Upload.objects.filter(batch_id=batch_id).first()
+    upload = Upload.objects.filter(pk=upload_id).first()
     if not upload:
         return
 
@@ -68,9 +80,11 @@ def csv_import(batch_id):
         # if not item.startswith("+"):
         #     item = "+{}".format(item)
         obj, created = PhoneNumber.objects.update_or_create(
-            phone_number=phone_number.strip())
+            phone_number=phone_number.strip(), defaults={
+                "timestamp": timezone.now()
+            })
         Check.objects.update_or_create(
-            batch=batch_id,
+            batch=upload.batch_id,
             phone_number=obj,
             defaults={
                 "source": str(upload)

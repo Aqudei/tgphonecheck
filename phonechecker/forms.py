@@ -79,7 +79,6 @@ class UploadForm(forms.ModelForm):
         super(UploadForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'batch_id',
             Fieldset(
                 'Upload CSV containing phone numbers and specify its column name',
                 'file',
@@ -96,4 +95,3 @@ class UploadForm(forms.ModelForm):
         """
         model = Upload
         fields = '__all__'
-        widgets = {'batch_id': forms.HiddenInput()}

@@ -1,4 +1,5 @@
 from logging import debug
+from uuid import uuid4
 from django.db import models
 from django.db.models.fields import CharField
 from django.urls import reverse
@@ -59,7 +60,7 @@ class Upload(models.Model):
     phone_column = models.CharField(
         _("Column Name"), max_length=200, default='PhoneNumbers')
     batch_id = models.CharField(
-        _("Batch Id"), max_length=100, null=True, blank=True, default='')
+        _("Batch Id"), max_length=100, null=True, blank=True, default=uuid4)
     remarks = models.TextField(_("Remarks"), null=True, blank=True, default='')
 
     class Meta:
@@ -97,7 +98,7 @@ class BotLogin(models.Model):
 
 class MySql(models.Model):
     batch_id = models.CharField(
-        _("Batch Id"), max_length=100, null=True, blank=True, default='')
+        _("Batch Id"), max_length=100, null=True, blank=True, default=uuid4)
     db_name = models.CharField(_("DB Name"), max_length=100)
     db_username = models.CharField(_("DB Username"), max_length=100)
     db_password = models.CharField(_("DB Password"), max_length=100)

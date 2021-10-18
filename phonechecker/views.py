@@ -19,9 +19,7 @@ def mysql(request):
     docstring
     """
     if request.method == 'GET':
-        batch_id = str(uuid4())
-        form = MySqlForm(initial={
-            "batch_id": batch_id})
+        form = MySqlForm()
         return render(request, 'phonechecker/mysql.html', {"form": form})
     else:
         form = MySqlForm(request.POST)
@@ -43,9 +41,7 @@ def upload(request):
     docstring
     """
     if request.method == 'GET':
-        batch_id = str(uuid4())
-        form = UploadForm(initial={
-                          "batch_id": batch_id})
+        form = UploadForm()
         return render(request, 'phonechecker/upload.html', {"form": form})
 
     if request.method == 'POST':

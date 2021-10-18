@@ -38,6 +38,12 @@ class BotLoginAdmin(admin.ModelAdmin):
 class UploadAdmin(admin.ModelAdmin):
     list_display = ('phone_column', 'file', 'remarks', 'batch_id')
 
+    # def response_add(self, request, obj, post_url_continue=None):
+    #     """
+    #     docstring
+    #     """
+    #     pass
+
 
 @admin.register(MySql)
 class MySqlAdmin(admin.ModelAdmin):

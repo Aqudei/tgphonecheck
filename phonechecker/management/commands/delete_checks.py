@@ -11,13 +11,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         categories = options.get('categories', [])
-        for cat in categories:
-            if cat.lower() == 'all':
-                Check.objects.all().delete()
-            if cat.lower() == 'pendings':
-                Check.objects.filter(result=0).delete()
-            if cat.lower() == 'processing':
-                Check.objects.filter(result=4).delete()
+        if categories:
+            for cat in categories:
+                if cat.lower() == 'all':
+                    Check.objects.all().delete()
+                if cat.lower() == 'pendings':
+                    Check.objects.filter(result=0).delete()
+                if cat.lower() == 'processing':
+                    Check.objects.filter(result=4).delete()
 
         if options['source']:
             Check.objects.filter(source__icontains=options['source']).delete()

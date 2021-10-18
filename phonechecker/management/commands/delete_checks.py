@@ -6,13 +6,18 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def add_arguments(self, parser):
-        parser.add_argument('categories', nargs='+', type=str)
+        parser.add_argument('--categories', nargs='+', type=str)
+        parser.add_argument('--source', type=str)
 
     def handle(self, *args, **options):
-        for cat in options['categories']:
+        categories = options.get('categories', [])
+        for cat in categories:
             if cat.lower() == 'all':
                 Check.objects.all().delete()
             if cat.lower() == 'pendings':
                 Check.objects.filter(result=0).delete()
             if cat.lower() == 'processing':
                 Check.objects.filter(result=4).delete()
+
+        if options['source']:
+            Check.objects.filter(source__icontains=options['source']).delete()

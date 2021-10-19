@@ -202,6 +202,7 @@ def run_telethon(batch_uuid):
 
         if login.code == '' or login.code is None:
             print("No code received. Exiting..")
+            client.disconnect()
             return
 
         print("Code received!")
@@ -209,3 +210,4 @@ def run_telethon(batch_uuid):
 
     print("Looking up numbers...")
     result = validate_numbers(client, batch_uuid)
+    client.disconnect()

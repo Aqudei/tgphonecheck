@@ -58,8 +58,8 @@ class UploadAdmin(admin.ModelAdmin):
         """
         docstring
         """
-        # tasks.csv_import.delay(obj.id)
-        # tasks.run_telethon.delay(obj.batch_id)
+        tasks.csv_import.delay(obj.id)
+        tasks.run_telethon.delay(obj.batch_id)
         redirect_url = "{}?{}".format(reverse(
             'tglogin'), urllib.parse.urlencode({'batch_id': obj.batch_id}))
         return redirect(redirect_url)

@@ -30,7 +30,7 @@ class CheckAdmin(ImportExportActionModelAdmin):
 @admin.action(description='Retry checking selected CSV files')
 def retry_check(modeladmin, request, queryset):
     batch_id = str(uuid4())
-    ids = queryset.values_list('id', flat=True)
+    ids = list([v for v in queryset.values_list('id', flat=True)])
     tasks.multicsv_import.delay(ids)
     tasks.run_telethon.delay(batch_id)
 

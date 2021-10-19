@@ -3,6 +3,9 @@ from phonechecker.models import *
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.admin import ImportExportActionModelAdmin
+from phonechecker import tasks
+from django.shortcuts import render, redirect
+import urllib
 # Register your models here.
 
 
@@ -24,9 +27,22 @@ class CheckAdmin(ImportExportActionModelAdmin):
     resource_class = CheckResource
 
 
+@admin.action(description='Retry checking selected CSV files')
+def retry_check(modeladmin, request, queryset):
+    batch_id = str(uuid4())
+    ids = queryset.values_list('id', flat=True)
+    tasks.multicsv_import.delay(ids)
+    tasks.run_telethon.delay(batch_id)
+
+    redirect_url = "{}?{}".format(reverse(
+        'tglogin'), urllib.parse.urlencode({'batch_id': batch_id}))
+    return redirect(redirect_url)
+
+
 @admin.register(PhoneNumber)
 class PhoneNumberAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'timestamp')
+    actions = [retry_check]
 
 
 @admin.register(BotLogin)

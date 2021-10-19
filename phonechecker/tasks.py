@@ -87,7 +87,9 @@ def csv_import(upload_id):
             batch=upload.batch_id,
             phone_number=obj,
             defaults={
-                "source": str(upload)
+                "source": str(upload),
+                "result": 0,
+                "username": ""
             }
         )
 
@@ -160,7 +162,16 @@ def validate_numbers(client, batch_uuid):
         raise
 
 
+@shared_task
+def multicsv_import(ids):
+    uploads = Upload.objects.filter(id__in=ids)
+    for upload in uploads:
+        csv_import(upload.id)
+
+
 # @background(schedule=3)
+
+
 @shared_task
 def run_telethon(batch_uuid):
     """

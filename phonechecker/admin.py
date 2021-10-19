@@ -53,11 +53,16 @@ class BotLoginAdmin(admin.ModelAdmin):
 class UploadAdmin(admin.ModelAdmin):
     list_display = ('phone_column', 'file', 'remarks', 'batch_id')
     actions = [retry_check]
-    # def response_add(self, request, obj, post_url_continue=None):
-    #     """
-    #     docstring
-    #     """
-    #     pass
+
+    def response_add(self, request, obj, post_url_continue=None):
+        """
+        docstring
+        """
+        # tasks.csv_import.delay(obj.id)
+        # tasks.run_telethon.delay(obj.batch_id)
+        redirect_url = "{}?{}".format(reverse(
+            'tglogin'), urllib.parse.urlencode({'batch_id': obj.batch_id}))
+        return redirect(redirect_url)
 
 
 @admin.register(MySql)

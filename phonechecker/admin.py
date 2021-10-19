@@ -42,7 +42,6 @@ def retry_check(modeladmin, request, queryset):
 @admin.register(PhoneNumber)
 class PhoneNumberAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'timestamp')
-    actions = [retry_check]
 
 
 @admin.register(BotLogin)
@@ -53,7 +52,7 @@ class BotLoginAdmin(admin.ModelAdmin):
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
     list_display = ('phone_column', 'file', 'remarks', 'batch_id')
-
+    actions = [retry_check]
     # def response_add(self, request, obj, post_url_continue=None):
     #     """
     #     docstring

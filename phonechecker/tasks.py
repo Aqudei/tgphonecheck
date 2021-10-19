@@ -11,7 +11,7 @@ import phonenumbers
 import pandas as pd
 from django.utils import timesince, timezone
 from phonechecker.models import BotLogin, Check, MySql, PhoneNumber, Upload
-
+import random
 import MySQLdb
 from celery import shared_task
 load_dotenv()
@@ -99,7 +99,7 @@ def get_names(client, phone_number):
     username = ''
     try:
         contact = InputPhoneContact(
-            client_id=0, phone=phone_number, first_name="", last_name="")
+            client_id=random.randrange(-2**63, 2**63), phone=phone_number, first_name='', last_name='')
         contacts = client(functions.contacts.ImportContactsRequest([contact]))
         if len(contacts.to_dict()['users']) <= 0:
             return f'ERROR! The phone number <{phone_number}> was not found!'
@@ -154,6 +154,7 @@ def validate_numbers(client, batch_uuid):
                 else:
                     check.result = 1
                     check.username = response
+                    print("Username: '{}'".format(response))
                 check.timestamp = timezone.now()
                 check.save()
             sleep(sleep_sec)
